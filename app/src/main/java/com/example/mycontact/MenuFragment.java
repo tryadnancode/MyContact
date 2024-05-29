@@ -26,10 +26,9 @@ public class MenuFragment extends Fragment {
     private static final int REQUEST_GALLERY = 200;
     private static final int REQUEST_PERMISSION = 300;
     private static final int REQUEST_GALLERY_PERMISSION = 400;
-    ImageView imageView, gallery, camera,img;
+    ImageView imageView, gallery, camera, img;
     TextView imagePathTextView;
     ImageView tickMarkImageView;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -39,15 +38,9 @@ public class MenuFragment extends Fragment {
         imagePathTextView = view.findViewById(R.id.image_path);
         tickMarkImageView = view.findViewById(R.id.tick_mark);
 
-        img.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showCustomDialog();
-            }
-        });
+        img.setOnClickListener(v -> showCustomDialog());
         return view;
     }
-
     private void showCustomDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         LayoutInflater inflater = getLayoutInflater();
@@ -56,38 +49,29 @@ public class MenuFragment extends Fragment {
         AlertDialog dialog = builder.create();
         camera = dialogView.findViewById(R.id.camera);
         gallery = dialogView.findViewById(R.id.gallery);
-        camera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.CAMERA)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.CAMERA}, REQUEST_PERMISSION);
-                } else {
-                    openCamera();
-                }
-                dialog.dismiss();
+        camera.setOnClickListener(v -> {
+            if (ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.CAMERA)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.CAMERA}, REQUEST_PERMISSION);
+            } else {
+                openCamera();
             }
+            dialog.dismiss();
         });
-        gallery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openGallery();
-                dialog.dismiss();
-            }
+        gallery.setOnClickListener(v -> {
+            openGallery();
+            dialog.dismiss();
         });
         dialog.show();
     }
-
     private void openCamera() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(intent, REQUEST_CAMERA);
     }
-
     private void openGallery() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, REQUEST_GALLERY);
     }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -108,7 +92,7 @@ public class MenuFragment extends Fragment {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(), selectedImage);
                     imageView.setImageBitmap(bitmap);
                     String imagePath = getPathFromUri(selectedImage);
-                    imagePathTextView.setText("Image Path: "+imagePath);
+                    imagePathTextView.setText("Image Path: " + imagePath);
                     tickMarkImageView.setImageResource(R.drawable.check_circle);
                     imageView.setVisibility(View.VISIBLE);
                 } catch (IOException e) {
@@ -130,7 +114,6 @@ public class MenuFragment extends Fragment {
         }
         return uri.getPath();
     }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -140,8 +123,7 @@ public class MenuFragment extends Fragment {
             } else {
                 Toast.makeText(getContext(), "Camera permission denied", Toast.LENGTH_SHORT).show();
             }
-        }
-        else if (requestCode == REQUEST_GALLERY_PERMISSION) {
+        } else if (requestCode == REQUEST_GALLERY_PERMISSION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openGallery();
             } else {

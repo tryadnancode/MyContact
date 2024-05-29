@@ -7,7 +7,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.view.MenuItem;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.Toast;
@@ -20,7 +19,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -29,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private ContactAdapter adapter;
     private static final int REQUEST_CONTACT_PERMISSION = 1;
     private static final int REQUEST_CONTACT_PICK = 2;
-    private ArrayList<Contact> contactList = new ArrayList<>();
+    private final ArrayList<Contact> contactList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,23 +59,20 @@ public class MainActivity extends AppCompatActivity {
         menu.setOnClickListener(v -> {
             PopupMenu popupMenu = new PopupMenu(MainActivity.this, v);
             popupMenu.getMenuInflater().inflate(R.menu.menu, popupMenu.getMenu());
-            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    item.getItemId();
-                    if (item.getItemId()==R.id.profile) {
-                        Fragment myFragment = new MenuFragment();
-                        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                        fragmentTransaction.replace(R.id.main, myFragment).commit();
-                        return true;
-                    } else if (item.getItemId() == R.id.home) {
-                        Toast.makeText(MainActivity.this, "Home", Toast.LENGTH_SHORT).show();
-                        return true;
-                    } else if(item.getItemId() == R.id.setting){
-                        Toast.makeText(MainActivity.this, "Setting", Toast.LENGTH_SHORT).show();
-                    }
-                    return false;
+            popupMenu.setOnMenuItemClickListener(item -> {
+                item.getItemId();
+                if (item.getItemId()==R.id.profile) {
+                    Fragment myFragment = new MenuFragment();
+                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    fragmentTransaction.replace(R.id.main, myFragment).commit();
+                    return true;
+                } else if (item.getItemId() == R.id.home) {
+                    Toast.makeText(MainActivity.this, "Home", Toast.LENGTH_SHORT).show();
+                    return true;
+                } else if(item.getItemId() == R.id.setting){
+                    Toast.makeText(MainActivity.this, "Setting", Toast.LENGTH_SHORT).show();
                 }
+                return false;
             });
             popupMenu.show();
         });
