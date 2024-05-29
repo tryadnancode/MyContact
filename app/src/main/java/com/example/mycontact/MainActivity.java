@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private void findId() {
         add = findViewById(R.id.add);
         recyclerView = findViewById(R.id.contact_list);
-        menu = (ImageButton) findViewById(R.id.menu);
+        menu = findViewById(R.id.menu);
     }
     private void onclick() {
         add.setOnClickListener(view -> {
