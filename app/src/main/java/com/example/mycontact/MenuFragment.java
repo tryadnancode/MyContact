@@ -1,39 +1,34 @@
 package com.example.mycontact;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-
+import android.provider.MediaStore;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-
-import android.provider.MediaStore;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import java.io.IOException;
-
 public class MenuFragment extends Fragment {
     private static final int REQUEST_CAMERA = 100;
     private static final int REQUEST_GALLERY = 200;
     private static final int REQUEST_PERMISSION = 300;
     private static final int REQUEST_GALLERY_PERMISSION = 400;
     ImageView imageView, gallery, camera,img;
-//    TextView imagePathTextView;
+    TextView imagePathTextView;
+    ImageView tickMarkImageView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,7 +36,9 @@ public class MenuFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_menu, container, false);
         imageView = view.findViewById(R.id.image);
         img = view.findViewById(R.id.gallery);
-//        imagePathTextView = view.findViewById(R.id.image_path);
+        imagePathTextView = view.findViewById(R.id.image_path);
+        tickMarkImageView = view.findViewById(R.id.tick_mark);
+
         img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,16 +97,19 @@ public class MenuFragment extends Fragment {
                 Bitmap imageBitmap = (Bitmap) extras.get("data");
                 imageView.setImageBitmap(imageBitmap);
                 imageView.setVisibility(View.VISIBLE);
-//                imagePathTextView.setText("Image captured by camera");
-//                imagePathTextView.setVisibility(View.VISIBLE);
+                imagePathTextView.setText("Image captured by camera");
+                imagePathTextView.setVisibility(View.VISIBLE);
+
+                tickMarkImageView.setImageResource(R.drawable.check_circle);
 
             } else if (requestCode == REQUEST_GALLERY && data != null) {
                 Uri selectedImage = data.getData();
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(), selectedImage);
                     imageView.setImageBitmap(bitmap);
-//                    String imagePath = getPathFromUri(selectedImage);
-//                    imagePathTextView.setText("Image Path: "+imagePath);
+                    String imagePath = getPathFromUri(selectedImage);
+                    imagePathTextView.setText("Image Path: "+imagePath);
+                    tickMarkImageView.setImageResource(R.drawable.check_circle);
                     imageView.setVisibility(View.VISIBLE);
                 } catch (IOException e) {
                     e.printStackTrace();
