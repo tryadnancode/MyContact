@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -22,7 +23,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    ImageButton add, menu;
+    ImageButton add;
+        ImageView menu;
     RecyclerView recyclerView;
     private ContactAdapter adapter;
     private static final int REQUEST_CONTACT_PERMISSION = 1;
