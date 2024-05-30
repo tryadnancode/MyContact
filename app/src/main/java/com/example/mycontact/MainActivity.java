@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         findId();
         onclick();
         recycler();
+
     }
     private void recycler() {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
