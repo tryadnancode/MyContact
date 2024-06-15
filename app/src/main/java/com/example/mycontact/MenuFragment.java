@@ -42,16 +42,19 @@ public class MenuFragment extends Fragment {
     TextView imagePathTextView;
     ImageView tickMarkImageView;
     Uri selectedImageUri;
+    ProgressBar progressBar;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_menu, container, false);
         imageView = view.findViewById(R.id.image);
         img = view.findViewById(R.id.gallery);
+        progressBar = view.findViewById(R.id.progress_bar);
         imagePathTextView = view.findViewById(R.id.image_path);
         tickMarkImageView = view.findViewById(R.id.tick_mark);
         onClick();
         return view;
+
     }
 
     private void onClick() {
@@ -101,8 +104,10 @@ public class MenuFragment extends Fragment {
         startActivityForResult(intent, REQUEST_CAMERA);
     }
     private void openGallery() {
+
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, REQUEST_GALLERY);
+        
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
