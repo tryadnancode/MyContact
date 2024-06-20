@@ -5,16 +5,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -25,11 +21,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class MenuFragment extends Fragment {
@@ -37,7 +30,6 @@ public class MenuFragment extends Fragment {
     private static final int REQUEST_GALLERY = 200;
     private static final int REQUEST_PERMISSION = 300;
     private static final int REQUEST_GALLERY_PERMISSION = 400;
-    private float mScaleFactor = 1.0f;
     ImageView imageView, gallery, camera, img;
     TextView imagePathTextView;
     ImageView tickMarkImageView;
@@ -59,12 +51,9 @@ public class MenuFragment extends Fragment {
 
     private void onClick() {
         img.setOnClickListener(v -> showCustomDialog());
-        imageView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                shareImage();
-                return true;
-            }
+        imageView.setOnLongClickListener(v -> {
+            shareImage();
+            return true;
         });
     }
     private void shareImage() {
@@ -114,17 +103,12 @@ public class MenuFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_CAMERA && data != null) {
-                // Handle image capture from camera
-                Bundle extras = data.getExtras();
-                Bitmap imageBitmap = (Bitmap) extras.get("data");
-                imageView.setImageBitmap(imageBitmap);
-                imageView.setVisibility(View.VISIBLE);
+
+                Bitmap selectedImage = (Bitmap) data.getExtras().get("data");
+                imageView.setImageBitmap(selectedImage);
                 imagePathTextView.setText("Image captured by camera");
                 imagePathTextView.setVisibility(View.VISIBLE);
                 tickMarkImageView.setImageResource(R.drawable.check_circle);
-                // Update selectedImageUri
-                selectedImageUri = saveImageAndGetUri(imageBitmap);
-
             } else if (requestCode == REQUEST_GALLERY && data != null) {
                 // Handle image selection from gallery
                 Uri selectedImage = data.getData();
@@ -143,25 +127,6 @@ public class MenuFragment extends Fragment {
                 }
             }
         }
-    }
-    private Uri saveImageAndGetUri(Bitmap imageBitmap) {
-        File imagesDir = new File(requireContext().getFilesDir(), "images");
-        if (!imagesDir.exists()) {
-            imagesDir.mkdirs();
-        }
-
-        File imageFile = new File(imagesDir, "image_" + System.currentTimeMillis() + ".jpg");
-
-        try {
-            FileOutputStream fos = new FileOutputStream(imageFile);
-            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-            fos.flush();
-            fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return FileProvider.getUriForFile(requireContext(), "com.example.mycontact.fileprovider", imageFile);
     }
 
     private String getPathFromUri(Uri uri) {
